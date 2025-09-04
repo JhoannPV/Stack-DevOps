@@ -22,6 +22,9 @@ Puertos por defecto:
 	  - `JWT_SEED=<clave_hex>` (puedes generar una con `openssl rand -hex 32`)
 	  - `MONGO_URL=mongodb://mern_user:israelFovLoVert@mongo-db:27017/`
 	  - `MONGO_DB_NAME=calendardb`
+
+Para efectos de prueba decidi incluir los archivos `.env` en el repo, pero en un entorno real no deberías subirlos a Git.
+
 2) Levantar servicios
 	- Ejecuta: `docker compose up -d`
 3) Verificar
@@ -77,15 +80,3 @@ Importante:
 	- Añadido bloque `location /api/ { proxy_pass http://backend:3001; ... }`.
 - `DevOps-Proyect/.env` (frontend):
 	- Ajustado `VITE_API_URL=/api` para entornos con Docker.
-
-### Comprobación rápida
-- Frontend responde:
-	- `http://localhost:3000` debe devolver 200.
-- API a través del proxy (sin token puede dar 401, pero debe alcanzar el backend):
-	- `http://localhost:3000/api/events`
-	- `http://localhost:3000/api/auth`
-
-Si algo no responde:
-- Revisa estado: `docker compose ps`
-- Logs: `docker compose logs -f devops-frontend` y `docker compose logs -f devops-backend`
-- Reconstruye tras cambios: `docker compose up -d --build`
