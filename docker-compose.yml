@@ -1,0 +1,48 @@
+services:
+
+  mongo-db:
+    image: mongo:6.0.6
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mern_user
+      MONGO_INITDB_ROOT_PASSWORD: israelFovLoVert
+    volumes:
+      - ./DevOps-Proyect-Bakend/mongo:/data/db
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: ["CMD-SHELL", "mongosh --eval 'db.adminCommand(\"ping\")' -u $$MONGO_INITDB_ROOT_USERNAME -p $$MONGO_INITDB_ROOT_PASSWORD --authenticationDatabase admin || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  devops-backend:
+    build:
+      context: ./DevOps-Proyect-Bakend
+      dockerfile: Dockerfile
+    image: devops-backend
+    depends_on:
+      mongo-db:
+        condition: service_healthy
+    env_file:
+      - ./DevOps-Proyect-Bakend/.env
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  devops-frontend:
+    build:
+      context: ./DevOps-Proyect
+      dockerfile: Dockerfile
+    image: devops-frontend
+    depends_on:
+      devops-backend:
+        condition: service_healthy
+    ports:
+      - "3000:80"
+    restart: unless-stopped

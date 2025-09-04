@@ -1,0 +1,119 @@
+/* Modal */
+.ReactModalPortal>div {
+  opacity: 0;
+}
+
+.ReactModalPortal .ReactModal__Overlay {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  transition: opacity .2s ease-in-out;
+  z-index: 999;
+}
+
+.ReactModal__Overlay.modal-fondo {
+  background-color: rgba(0, 0, 0, 0.3);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  position: fixed;
+}
+
+.ReactModalPortal .ReactModal__Overlay--after-open {
+  opacity: 1;
+}
+
+.ReactModalPortal .ReactModal__Overlay--before-close {
+  opacity: 0;
+}
+
+.ReactModal__Content.modal {
+  background: white;
+  border-radius: 5px;
+  color: rgb(51, 51, 51);
+  display: inline;
+  max-height: 620px;
+  max-width: 500px;
+  outline: none;
+  padding: 10px;
+}
+
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) translateY(50px);
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale(1.1) translateY(-10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* FABS */
+.fab-add {
+  border-radius: 100% !important;
+  bottom: 25px;
+  font-size: 30px;
+  padding: 25px;
+  position: fixed;
+  right: 25px;
+  width: 50px;
+  height: 50px;
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fab-add.show {
+  opacity: 1;
+  pointer-events: auto;
+  animation: bounceIn 0.4s ease;
+}
+
+.fab-cancel-select {
+  border-radius: 100% !important;
+  bottom: 80px;
+  font-size: 30px;
+  padding: 25px;
+  position: fixed;
+  left: 25px;
+  width: 50px;
+  height: 50px;
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fab-cancel-select.show {
+  opacity: 1;
+  pointer-events: auto;
+  animation: bounceIn 0.4s ease;
+}
+
+.fab-danger {
+  border-radius: 100% !important;
+  bottom: 25px;
+  font-size: 30px;
+  padding: 25px;
+  position: fixed;
+  left: 25px;
+  width: 50px;
+  height: 50px;
+
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fab-danger.show {
+  opacity: 1;
+  pointer-events: auto;
+  animation: bounceIn 0.4s ease;
+}

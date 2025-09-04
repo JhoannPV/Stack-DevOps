@@ -1,0 +1,29 @@
+node_modules
+
+# Build output
+dist
+.dist
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+.pnpm-debug.log*
+
+# Git and editor
+.git
+.gitignore
+.vscode
+.idea
+.DS_Store
+
+# Local env files (include .env, ignore others)
+.env.*
+!.env
+
+# Docker compose (not needed in build context)
+docker-compose.yml
+
+# Docs (optional to ignore to reduce context)
+README.md
