@@ -16,12 +16,16 @@ export const useAuthStore = () => {
             localStorage.setItem('token-init-date', new Date().getTime().toString());
             dispatch(onLogin({ name: data.user.name, _id: data.user.id }));
         } catch (error) {
-            const { response } = error as ErrorResponseLogin;
-            const msgEmail: string = response.data?.errors.email?.msg || '';
-            const msgPassword: string = response.data?.errors.password?.msg || '';
-            const msg: string = `${msgEmail}${(msgEmail && msgPassword) && ' and '}${msgPassword}`;
-
-            dispatch(onLogout(msg));
+            const { response } = error as ErrorResponse;
+            if (response.data?.error) {
+                dispatch(onLogout(response.data?.error))
+            } else {
+                const resp = error as ErrorResponseLogin;
+                const respEmail: string = resp.response.data?.errors.email?.msg || '';
+                const respPassword: string = resp.response.data?.errors.password?.msg || '';
+                const msg: string = `${respEmail}${(respEmail && respPassword) && ' and '}${respPassword}`;
+                dispatch(onLogout(msg));
+            }
             setTimeout(() => {
                 dispatch(clearErrorMessage());
             }, 10);
