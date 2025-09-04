@@ -15,6 +15,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - app-net
 
   devops-backend:
     build:
@@ -34,6 +36,10 @@ services:
       interval: 10s
       timeout: 3s
       retries: 5
+    networks:
+      app-net:
+        aliases:
+          - backend
 
   devops-frontend:
     build:
@@ -46,3 +52,9 @@ services:
     ports:
       - "3000:80"
     restart: unless-stopped
+    networks:
+      - app-net
+
+networks:
+  app-net:
+    driver: bridge

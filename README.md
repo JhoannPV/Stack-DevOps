@@ -16,7 +16,7 @@ Puertos por defecto:
 
 ### Opción A: Docker Compose (todo en contenedores)
 1) Crear variables de entorno
-	- Frontend: copiar `.env.template` a `.env` en `DevOps-Proyect/` (trae `VITE_API_URL=http://localhost:3001/api`).
+	- Frontend: copiar `.env.template` a `.env` en `DevOps-Proyect/` y usar `VITE_API_URL=/api` (el frontend hablará con el backend a través de Nginx).
 	- Backend: copiar `.env.template` a `.env` en `DevOps-Proyect-Bakend/` y completar:
 	  - `PORT=3001`
 	  - `JWT_SEED=<clave_hex>` (puedes generar una con `openssl rand -hex 32`)
@@ -56,3 +56,36 @@ Frontend:
 - 401/403: revisa `JWT_SEED` del backend y login en el frontend.
 - 500 DB: confirma `MONGO_URL` y que Mongo esté arriba (`docker compose ps`, `logs`).
 - CORS/API: verifica que `VITE_API_URL` apunte a `http://localhost:3001/api` en desarrollo local.
+
+## Red y comunicación entre servicios (Docker Compose)
+
+Para que el frontend no use `localhost` y pueda resolver al backend por nombre de servicio dentro de Docker, se configuró una red de usuario y un proxy en Nginx:
+
+- Red de usuario: `app-net` (tipo `bridge`). Todos los servicios (`mongo-db`, `devops-backend`, `devops-frontend`) están conectados a esta red.
+- Alias de servicio: el backend (`devops-backend`) tiene el alias `backend`. Otros contenedores pueden resolver `http://backend:3001` dentro de la red.
+- Proxy en Nginx (frontend): en `DevOps-Proyect/default.conf` existe un bloque `location /api/` que hace `proxy_pass http://backend:3001`. Así, el navegador consume `http://localhost:3000/api/...` y Nginx reenvía internamente al backend.
+
+Importante:
+- El hostname `backend` solo existe dentro de la red Docker. El navegador de tu host no puede resolver `backend`. Por eso, en contenedores usamos proxy `/api` en el frontend y `VITE_API_URL=/api`.
+- En desarrollo local sin Docker, debes usar `VITE_API_URL=http://localhost:3001/api` y levantar el backend localmente.
+
+### Cambios aplicados
+- `docker-compose.yml`:
+	- Creada red `app-net` y conectados los servicios.
+	- Añadido alias `backend` al servicio `devops-backend`.
+- `DevOps-Proyect/default.conf` (Nginx del frontend):
+	- Añadido bloque `location /api/ { proxy_pass http://backend:3001; ... }`.
+- `DevOps-Proyect/.env` (frontend):
+	- Ajustado `VITE_API_URL=/api` para entornos con Docker.
+
+### Comprobación rápida
+- Frontend responde:
+	- `http://localhost:3000` debe devolver 200.
+- API a través del proxy (sin token puede dar 401, pero debe alcanzar el backend):
+	- `http://localhost:3000/api/events`
+	- `http://localhost:3000/api/auth`
+
+Si algo no responde:
+- Revisa estado: `docker compose ps`
+- Logs: `docker compose logs -f devops-frontend` y `docker compose logs -f devops-backend`
+- Reconstruye tras cambios: `docker compose up -d --build`
