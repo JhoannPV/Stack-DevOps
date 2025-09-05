@@ -25,11 +25,11 @@ export const useCalendarStore = () => {
                 // Actualizando
                 const { data } = await calendarApi.put(`/events/update-event/${calendarEvent._id}`, calendarEvent);
                 dispatch(onUpdateEvent({ ...calendarEvent, user: data.event.user }));
+            } else {
+                // Creando
+                const { data } = await calendarApi.post('/events/create-event', calendarEvent);
+                dispatch(onAddNewEvent({ ...calendarEvent, _id: data.event._id, user: data.event.user }));
             }
-
-            // Creando
-            const { data } = await calendarApi.post('/events/create-event', calendarEvent);
-            dispatch(onAddNewEvent({ ...calendarEvent, _id: data.event._id, user: data.event.user }));
         } catch (error) {
             const { response } = error as ErrorResponse;
             Swal.fire('Error al guardar', response.data?.error, 'error');
@@ -66,7 +66,7 @@ export const useCalendarStore = () => {
         activeEvent,
         hasEventSelected: !!activeEvent,
 
-        //* Métodos
+        //* MÃŠtodos
         setActiveEvent,
         startSavingEvent,
         startDeletingEvent,

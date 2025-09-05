@@ -17,8 +17,6 @@ export class EventsDatasourceImpl implements EventsDatasource {
             return mappedEvents;
 
         } catch (error) {
-            console.log(error);
-
             if (error instanceof CustomError) {
                 throw error;
             }
@@ -67,12 +65,8 @@ export class EventsDatasourceImpl implements EventsDatasource {
 
             await updatedEvent.populate('user', 'name');
 
-            console.log(updatedEvent);
-
-
             return EventsMapper.EventEntityFromObject(updatedEvent);
         } catch (error) {
-
             if (error instanceof CustomError) {
                 throw error;
             }
