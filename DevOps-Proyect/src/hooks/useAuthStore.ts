@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from "react-redux"
 import { calendarApi } from "../api";
 import { clearErrorMessage, onChecking, onLogin, onLogout, onLogoutCalendar } from "../store";
-import type { ErrorResponse, ErrorResponseLogin, LoginParams, RegisterParams, RootState } from ".";
+import type { ErrorResponse, ErrorResponseLogin, ErrorResponseRegister, LoginParams, RegisterParams, RootState } from ".";
+import { buildErrorMessage } from "../helpers";
 
 export const useAuthStore = () => {
 
@@ -23,7 +24,7 @@ export const useAuthStore = () => {
                 const resp = error as ErrorResponseLogin;
                 const respEmail: string = resp.response.data?.errors.email?.msg || '';
                 const respPassword: string = resp.response.data?.errors.password?.msg || '';
-                const msg: string = `${respEmail}${(respEmail && respPassword) && ' and '}${respPassword}`;
+                const msg = buildErrorMessage(respEmail, respPassword);
                 dispatch(onLogout(msg));
             }
             setTimeout(() => {
@@ -41,7 +42,16 @@ export const useAuthStore = () => {
             dispatch(onLogin({ name: data.user.name, _id: data.user.id }));
         } catch (error) {
             const { response } = error as ErrorResponse;
-            dispatch(onLogout(response.data?.error) || '');
+            if (response.data?.error) {
+                dispatch(onLogout(response.data?.error))
+            } else {
+                const resp = error as ErrorResponseRegister;
+                const respName: string = resp.response.data?.errors.name?.msg || '';
+                const respEmail: string = resp.response.data?.errors.email?.msg || '';
+                const respPassword: string = resp.response.data?.errors.password?.msg || '';
+                const msg = buildErrorMessage(respName, respEmail, respPassword);
+                dispatch(onLogout(msg));
+            }
             setTimeout(() => {
                 dispatch(clearErrorMessage());
             }, 10);

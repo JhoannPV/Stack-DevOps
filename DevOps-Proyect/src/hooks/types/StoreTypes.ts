@@ -35,3 +35,21 @@ export interface ErrorResponseLogin {
         }
     }
 }
+
+export interface ErrorResponseRegister {
+    response: {
+        data?: {
+            errors: {
+                name: {
+                    msg: string
+                },
+                email: {
+                    msg: string
+                },
+                password: {
+                    msg: string
+                },
+            }
+        }
+    }
+}
