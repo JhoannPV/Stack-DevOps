@@ -7,6 +7,10 @@ FROM node:22.18.0-alpine AS builder
 
 WORKDIR /app
 
+# Build-time API base URL for Vite (falls back to /api)
+ARG VITE_API_URL
+ENV VITE_API_URL=${VITE_API_URL}
+
 # Copy only manifest and Yarn config first for better layer caching
 COPY package.json yarn.lock .yarnrc.yml ./
 # If present, copy Yarn metadata (plugins/cache/state)

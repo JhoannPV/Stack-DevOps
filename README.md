@@ -2,7 +2,7 @@
 
 Este repo contiene:
 - Frontend (React + Vite + TS): `DevOps-Proyect`
-- Backend (Node + Express + MongoDB): `DevOps-Proyect-Bakend`
+- Backend (Node + TS + Express + MongoDB): `DevOps-Proyect-Bakend`
 - Orquestación con Docker Compose: `docker-compose.yml`
 
 Puertos por defecto:
@@ -16,12 +16,13 @@ Puertos por defecto:
 
 ### Opción A: Docker Compose (todo en contenedores)
 1) Crear variables de entorno
-	- Frontend: copiar `.env.template` a `.env` en `DevOps-Proyect/` y usar `VITE_API_URL=/api` (el frontend hablará con el backend a través de Nginx).
-	- Backend: copiar `.env.template` a `.env` en `DevOps-Proyect-Bakend/` y completar:
-	  - `PORT=3001`
-	  - `JWT_SEED=<clave_hex>` (puedes generar una con `openssl rand -hex 32`)
-	  - `MONGO_URL=mongodb://mern_user:israelFovLoVert@mongo-db:27017/`
-	  - `MONGO_DB_NAME=calendardb`
+	- Copia `.env.template` a `.env` en la raíz (donde está `docker-compose.yml`) y ajusta las variables:
+		- `MONGO_INITDB_USERNAME` y `MONGO_INITDB_PASSWORD`: credenciales para el usuario admin de Mongo.
+		- `MONGO_DB_NAME`: nombre de la base de datos que usará el backend.
+	- Opcionalmente, puedes copiar `.env.template` a `.env` dentro de `DevOps-Proyect-Bakend/` para tener las mismas variables ahí (no es obligatorio, ya que las pasamos desde el Compose).
+		- Ajusta `MONGO_URL` si cambiaste usuario/contraseña/nombre DB.
+		- Genera un valor seguro para `JWT_SEED` (ejemplo: `openssl rand -hex 32`).
+	- Asegúrate que en `DevOps-Proyect/.env` el valor de `VITE_API_URL` sea `/api` (ya está así en el template).
 
 Para efectos de prueba decidi incluir los archivos `.env` en el repo, pero en un entorno real no deberías subirlos a Git.
 

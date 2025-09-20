@@ -4,8 +4,8 @@ services:
     image: mongo:6.0.6
     restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: mern_user
-      MONGO_INITDB_ROOT_PASSWORD: israelFovLoVert
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_PASSWORD}
     volumes:
       - ./DevOps-Proyect-Bakend/mongo:/data/db
     ports:
@@ -22,12 +22,15 @@ services:
     build:
       context: ./DevOps-Proyect-Bakend
       dockerfile: Dockerfile
+      args:
+        PORT: ${PORT}
+        JWT_SEED: ${JWT_SEED}
+        MONGO_URL: ${MONGO_URL}
+        MONGO_DB_NAME: ${MONGO_DB_NAME}
     image: devops-backend
     depends_on:
       mongo-db:
         condition: service_healthy
-    env_file:
-      - ./DevOps-Proyect-Bakend/.env
     ports:
       - "3001:3001"
     restart: unless-stopped
@@ -45,6 +48,8 @@ services:
     build:
       context: ./DevOps-Proyect
       dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL}
     image: devops-frontend
     depends_on:
       devops-backend:

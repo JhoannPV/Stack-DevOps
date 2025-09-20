@@ -29,6 +29,16 @@ COPY --from=builder /app/dist ./dist
 # Copia la carpeta public para archivos estáticos
 COPY --from=builder /app/src/public ./src/public
 
+# Variables de entorno (por defecto) inyectables en build; se pueden sobrescribir en runtime
+ARG PORT
+ARG JWT_SEED
+ARG MONGO_URL
+ARG MONGO_DB_NAME
+ENV PORT=${PORT} \
+    JWT_SEED=${JWT_SEED} \
+    MONGO_URL=${MONGO_URL} \
+    MONGO_DB_NAME=${MONGO_DB_NAME}
+
 # Expone el puerto 3001
 EXPOSE 3001
 
