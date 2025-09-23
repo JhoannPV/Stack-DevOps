@@ -1,0 +1,19 @@
+trigger:
+- main   # rama de calendar que dispara el pipeline
+
+pool:
+  name: myagent   # tu agente self-hosted
+
+stages:
+- stage: Deploy
+  displayName: "Desplegar calendar"
+  jobs:
+  - job: DeployJob
+    displayName: "Ejecutar despliegue"
+    steps:
+
+    # Ejecutar el playbook deploy_project.yml en /home/sysadmin/Ansible
+    - script: |
+        ansible-playbook -i inventory.ini deploy_project.yml
+      displayName: "Ejecutar playbook deploy_project.yml"
+      workingDirectory: /home/sysadmin/Ansible
